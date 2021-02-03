@@ -14,11 +14,6 @@ type Client struct {
 	connection net.Conn
 }
 
-type Socket struct {
-	connection net.Conn
-	Events     map[string]event.Handler
-}
-
 type Config struct {
 	Addr string
 }
@@ -66,16 +61,4 @@ func (c *Client) Emit(eventName string, data []byte) {
 // creates a new Client
 func Create(config Config) Client {
 	return Client{Config: config, Events: make(map[string]ConnectionHandler)}
-}
-
-// emits data to event listener's
-func (s *Socket) Emit(eventName string, data []byte) {
-	eventNameB := append([]byte(eventName), byte('\n'))
-	data = append(data, byte('\n'))
-	s.connection.Write(append(eventNameB, data...))
-}
-
-// sets a event handler
-func (s *Socket) On(eventName string, cb event.Handler) {
-	s.Events[eventName] = cb
 }
