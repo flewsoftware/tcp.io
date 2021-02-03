@@ -14,6 +14,7 @@ type Server struct {
 	Events      map[string]ConnectionHandler
 	connections []Socket
 	doListen    bool
+	RandFunc    func() int
 }
 
 var emptySocket = Socket{}
@@ -59,7 +60,7 @@ func (s *Server) Listen() error {
 
 func (s *Server) newConnection(c net.Conn) (int, Socket) {
 	sLocation := len(s.connections)
-	socket := Socket{c, map[string]event.Handler{}, utils.RandomID()}
+	socket := Socket{c, map[string]event.Handler{}, s.RandFunc()}
 	s.connections = append(s.connections, socket)
 	if val, ok := s.Events[events.Connection]; ok {
 		val(socket)
@@ -72,7 +73,7 @@ func (s *Server) StopListening() {
 }
 
 func Create(config Config) Server {
-	return Server{Config: config, Events: make(map[string]ConnectionHandler)}
+	return Server{Config: config, Events: make(map[string]ConnectionHandler), RandFunc: utils.RandomID}
 }
 
 type ConnectionHandler func(Socket)
