@@ -6,6 +6,7 @@ import (
 	"time"
 )
 
+// reads data from a connection
 func ReadData(c net.Conn) (error, string, []byte) {
 	var eventName = ""
 	var message []byte
@@ -32,6 +33,7 @@ func ReadData(c net.Conn) (error, string, []byte) {
 	return nil, eventName, message
 }
 
+// generates a random id
 func RandomID() int {
 	rand.Seed(time.Now().UnixNano())
 	return rand.Int()
