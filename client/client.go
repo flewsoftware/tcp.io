@@ -3,6 +3,7 @@ package client
 import (
 	"fmt"
 	"net"
+	"sync"
 	"tcpio/event"
 	"tcpio/events"
 	"tcpio/utils"
@@ -12,6 +13,7 @@ type Client struct {
 	Config     Config
 	Events     map[string]ConnectionHandler
 	connection net.Conn
+	mutex      sync.Mutex
 }
 
 type Config struct {
@@ -29,6 +31,8 @@ func (c *Client) Connect() net.Conn {
 		connection: conn,
 		Events:     map[string]event.Handler{},
 	}
+	c.mutex.Lock()
+	defer c.mutex.Unlock()
 	if val, ok := c.Events[events.Connection]; ok {
 		val(socket)
 	}
@@ -50,6 +54,8 @@ type ConnectionHandler func(Socket)
 
 // sets a event handler
 func (c *Client) On(eventName string, cb ConnectionHandler) {
+	c.mutex.Lock()
+	defer c.mutex.Unlock()
 	c.Events[eventName] = cb
 }
 
