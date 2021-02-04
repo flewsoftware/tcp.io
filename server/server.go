@@ -78,6 +78,7 @@ func Create(config Config) Server {
 
 type ConnectionHandler func(Socket)
 
+// this function should be called after disconnecting a user
 func (s *Server) UserDisconnect(user Socket) {
 	if val, ok := s.Events[events.Disconnect]; ok {
 		val(user)
