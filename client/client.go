@@ -44,7 +44,9 @@ func (c *Client) Connect() net.Conn {
 				fmt.Println(err)
 				break
 			}
-			socket.Events[eventName](message)
+			if val, ok := socket.Events[eventName]; ok {
+				val(message)
+			}
 		}
 	}()
 	return nil
