@@ -1,7 +1,6 @@
 package client
 
 import (
-	"fmt"
 	"net"
 	"sync"
 	"tcpio/event"
@@ -41,7 +40,6 @@ func (c *Client) Connect() net.Conn {
 		for {
 			err, eventName, message := utils.ReadData(c.connection)
 			if err != nil {
-				fmt.Println(err)
 				break
 			}
 			if val, ok := socket.Events[eventName]; ok {
