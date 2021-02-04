@@ -47,7 +47,6 @@ func (s *Server) Listen() error {
 				for {
 					err, eventName, message := utils.ReadData(c)
 					if err != nil {
-						fmt.Println(err)
 						break
 					}
 					socket.Events[eventName](message)
