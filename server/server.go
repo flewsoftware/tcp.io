@@ -1,8 +1,8 @@
 package server
 
 import (
-	"fmt"
 	"net"
+	"sync"
 	"tcpio/event"
 	"tcpio/events"
 	"tcpio/utils"
@@ -15,12 +15,14 @@ type Server struct {
 	connections []Socket
 	doListen    bool
 	RandFunc    func() int
+	mutex       sync.Mutex
 }
 
 var emptySocket = Socket{}
 
 func (s *Server) On(eventName string, cb ConnectionHandler) {
-
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
 	s.Events[eventName] = cb
 }
 
@@ -60,6 +62,8 @@ func (s *Server) Listen() error {
 func (s *Server) newConnection(c net.Conn) (int, Socket) {
 	sLocation := len(s.connections)
 	socket := Socket{c, map[string]event.Handler{}, s.RandFunc()}
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
 	s.connections = append(s.connections, socket)
 	if val, ok := s.Events[events.Connection]; ok {
 		val(socket)
@@ -79,6 +83,8 @@ type ConnectionHandler func(Socket)
 
 // this function should be called after disconnecting a user
 func (s *Server) UserDisconnect(user Socket) {
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
 	if val, ok := s.Events[events.Disconnect]; ok {
 		val(user)
 	}
