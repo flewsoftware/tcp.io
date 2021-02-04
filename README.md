@@ -1,5 +1,6 @@
 ## What is TCP.IO
-TCP.IO enables real-time bidirectional event-based communication. Inspired by Socket.IO,
+TCP.IO enables real-time bidirectional event-based communication. Inspired by Socket.IO,   
+⚠ TCP.IO IS NOT READY FOR PRODUCTION
 
 ## What can I use it for
 * To create messaging apps
